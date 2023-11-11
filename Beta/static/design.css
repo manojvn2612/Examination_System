@@ -1,0 +1,28 @@
+.Dash-button-login {
+    display: block;
+    margin: 20px 0; /* Add a margin to separate the button from the dashboard */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    color: #3498db;
+    background-color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+    
+}
+  
+.Dash-button-login:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+  

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<title>Main Page</title>
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='design.css') }}">	
+	<script src='main.js'></script>
+</head>
+<body>
+	<h1> Home </h1>
+	<button class="Dash-button-login" onclick="location.href='{{ url_for('login') }}'">Login</button>
+	<button class="Dash-button-login" onclick="location.href='{{ url_for('register') }}'">Register</button>
+</body>
+</html>
