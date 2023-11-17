@@ -9,8 +9,11 @@
 	<script src='main.js'></script>
 </head>
 <body>
-	<h1> Home </h1>
-	<button class="Dash-button-login" onclick="location.href='{{ url_for('login') }}'">Login</button>
-	<button class="Dash-button-login" onclick="location.href='{{ url_for('register') }}'">Register</button>
+	<div class="centre-main"><h1> Home </h1></div>
+	<br><br><br><br><br><br><br><br><br><br><br><br>
+	<div class = "Dash-button">
+		<button class="Dash-button-Dash" onclick="location.href='{{ url_for('login') }}'">Login</button>
+		<button class="Dash-button-Dash" onclick="location.href='{{ url_for('register') }}'">Register</button>
+	</div>
 </body>
 </html>

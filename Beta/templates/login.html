@@ -9,11 +9,11 @@
     <script src='main.js'></script>
 </head>
 <body>
-    <form action="{{ url_for('dashboard', pnr=pnr) }}" method="post">
+    <form action="" method="post">
         <label for="pnr">Pnr</label>
-        <input type="number" id="pnr" name="pnr" required>
+        <input type="number" id="pnr" name="pnr" placeholder="Please Enter your PNR" required>
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" placeholder="Give Your Full Name">
         <input type="submit" value="Submit">
     </form>
 </body>
