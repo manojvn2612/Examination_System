@@ -25,3 +25,11 @@ BEGIN
   EXECUTE stmt;
   DEALLOCATE PREPARE stmt;
 END$$
+
+mysql> create trigger q_create
+    -> After Insert ON Question_paper
+    -> for each row
+    -> begin
+    -> call q_p_create(new.qid);
+    -> End$$
+Query OK, 0 rows affected (0.03 sec)
