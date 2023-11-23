@@ -1,6 +1,7 @@
 import email
 from flask import Flask, render_template, redirect, request, url_for,session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 app = Flask(__name__)
 
 #secret key is
@@ -39,6 +40,7 @@ def login():
         designation = request.form.get('designation')
         session["email"] = email
         if designation == "Student" and Login_Users_s.query.filter_by(email=email,password = password).first():
+            print(designation)
             return redirect("/Dashboard")
         elif designation == "Teacher" and Login_Users_t.query.filter_by(email=email,password = password).first():
             return redirect("/Dashboard")
@@ -58,10 +60,23 @@ def register():
 def dashboard():
     if "email" in session:
         email = session.get('email')
-        
         return render_template('Dashboard.html',email = email)
     else:
         return redirect(url_for("login"))
+@app.route("/set_paper", methods=["POST", "GET"])
+def set_paper():
+    try:
+        paper_id = request.args.get('paper_id')
+        session = db.session
+        sql_expression = text("CALL q_p_create(:paper_id)")
+        session.execute(sql_expression, {'paper_id': 100})
+        session.commit()
+        return render_template('set_paper.html')
+    except Exception as e:
+        return f"Error: {str(e)}", 500
+@app.errorhandler(500)
+def wrong(error):
+    return  render_template('500.html'),500
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404
