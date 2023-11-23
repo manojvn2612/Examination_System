@@ -1,4 +1,5 @@
 use examination;
+-- create a procedure to create a question paper
 CREATE PROCEDURE q_p_create(IN qid INT)
 BEGIN
   DECLARE table_name VARCHAR(32);
