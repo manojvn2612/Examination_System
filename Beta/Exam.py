@@ -35,7 +35,7 @@ class Login_Users_t(db.Model):
     def __init__(self,email,password):
         self.email = email
         self.password = password
-class Question_Paper(db.Model):
+class Questions(db.Model):
     __tablename__ = 'Question_Paper'
     qid = db.Column(db.Integer, primary_key = True, autoincrement = True)
     qgid = db.Column(db.Integer, nullable=False)
@@ -43,6 +43,9 @@ class Question_Paper(db.Model):
     DOC = db.Column(db.DateTime, default=datetime.utcnow)
     DOS = db.Column(db.DateTime)
     DOE = db.Column(db.DateTime)
+
+
+
 @app.route("/")
 def home():
     return render_template('index.html')
@@ -82,20 +85,46 @@ def dashboard():
             return render_template("Dashboard_student.html",email = email)
     else:
         return redirect(url_for("login"))
-    return 
+     
 @app.route("/set_paper", methods=["POST", "GET"])
 def set_paper():
     try:
         session = db.session
         last_q = text("SELECT last_q() as last_qid")
         get_id = session.execute(last_q).fetchone()
-        paper_id_details = get_id[0]+1
-        call_procedure = text("CALL q_p_create(:paper_id)")
-        session.execute(call_procedure, {'paper_id': paper_id})
-        session.commit()
-        return render_template('set_paper.html',q_id = paper_id_details)
+        paper_id_details = get_id[0] + 1
+
+        if request.method == 'POST':
+            questions = request.form.getlist('question[]')
+            options = request.form.getlist('options[]')
+            option_values = request.form.getlist('option_values[]')
+            selected_options = request.form.getlist('selected_option[]')
+
+            # Assuming each set of options corresponds to a question
+            for i, question_text in enumerate(questions):
+                # Create a new Question instance
+                question_text = question_text
+                option_a = (options[i] == 'option_a'),
+                option_b = (options[i] == 'option_b'),
+                option_c = (options[i] == 'option_c'),
+                option_d = (options[i] == 'option_d'),
+                correct = option_values[i] if selected_options[i] == 'on' else None  # Set correct option value if selected
+                query = text(
+                    f"INSERT INTO q{paper_id_details}(question_text,option_a,option_b,option_c,option_d,correct) VALUES ({question_text},{option_a},{option_b},{option_c},{option_d},{correct})"
+                )
+                # Add the new question to the database
+                db.session.execute(query)
+
+            # Commit changes to the database
+            db.session.commit()
+            return redirect(url_for("dashboard"))
+
+        # Handling other HTTP methods (e.g., GET)
+        return render_template('set_paper.html', q_id=paper_id_details)
     except Exception as e:
         return f"Error: {str(e)}", 500
+
+
 @app.errorhandler(500)
 def wrong(error):
     return  render_template('500.html'),500

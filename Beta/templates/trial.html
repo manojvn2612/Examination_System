@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Questions with Options</title>
+  <style>
+    /* Add any styling here */
+  </style>
+</head>
+<body>
+
+  <h1>Dynamic Questions with Options</h1>
+
+  <form id="questionsForm">
+    <button type="button" onclick="addQuestion()">Add Question</button>
+    <div id="questionsContainer">
+      <!-- Questions with options will be added here dynamically -->
+    </div>
+    <input type="submit" value="Submit">
+  </form>
+
+  <script>
+    function addQuestion() {
+      var questionsContainer = document.getElementById('questionsContainer');
+
+      // Create a new div to hold the question and its options
+      var questionDiv = document.createElement('div');
+
+      // Create a new input for the question text
+      var newQuestion = document.createElement('input');
+      newQuestion.type = 'text';
+      newQuestion.name = 'question[]'; // Use an array to handle variable questions
+      newQuestion.placeholder = 'Enter your question';
+
+      // Append the question input to the div
+      questionDiv.appendChild(newQuestion);
+      questionDiv.appendChild(document.createElement('br')); // Add line break for better readability
+
+      // Create radio buttons for options
+      for (var i = 1; i <= 4; i++) { // Adjust the number of options as needed
+        var optionLabel = document.createElement('label');
+        optionLabel.innerHTML = 'Option ' + i;
+
+        var option = document.createElement('input');
+        option.type = 'radio';
+        option.name = 'options[' + (questionsContainer.children.length / 2) + ']'; // Use an array for options related to each question
+
+        // Append option label and input to the div
+        questionDiv.appendChild(option);
+        questionDiv.appendChild(optionLabel);
+        questionDiv.appendChild(document.createElement('br')); // Add line break for better readability
+      }
+
+      // Append the entire question div to the container
+      questionsContainer.appendChild(questionDiv);
+    }
+  </script>
+
+</body>
+</html>

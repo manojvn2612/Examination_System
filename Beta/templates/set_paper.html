@@ -3,22 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Set Paper</title>
-  <style>
-    /* Add any styling here */
-  </style>
-</head>
-<body>
-
-  <h1>Dynamic Questions with Options</h1>
-
-  <form id="questionsForm">
-    <button type="button" onclick="addQuestion()">Add Question</button>
-    <div id="questionsContainer">
-    </div>
-    <input type="submit" value="Submit">
-  </form>
-
+  <title>Questionnaire</title>
   <script>
     function addQuestion() {
       var questionsContainer = document.getElementById('questionsContainer');
@@ -27,30 +12,43 @@
 
       var newQuestion = document.createElement('input');
       newQuestion.type = 'text';
-      newQuestion.name = 'question[]'; 
+      newQuestion.name = 'question[]';
       newQuestion.placeholder = 'Enter your question';
 
       questionDiv.appendChild(newQuestion);
-      questionDiv.appendChild(document.createElement('br')); 
+      questionDiv.appendChild(document.createElement('br'));
 
       for (var i = 1; i <= 4; i++) {
-        var optionLabel = document.createElement('label');
-        optionLabel.innerHTML = 'Option ' + i;
+        var optionInput = document.createElement('input');
+        optionInput.type = 'text';
+        optionInput.name = 'options[]';
+        optionInput.placeholder = 'Enter option value';
 
-        var option = document.createElement('input');
-        option.type = 'radio';
-        option.name = 'options[' + (questionsContainer.children.length / 2) + ']'; 
+        var optionRadio = document.createElement('input');
+        optionRadio.type = 'radio';
+        optionRadio.name = 'selected_option[]';
 
-        
-        questionDiv.appendChild(option);
-        questionDiv.appendChild(optionLabel);
-        questionDiv.appendChild(document.createElement('br')); 
+        questionDiv.appendChild(optionRadio);
+        questionDiv.appendChild(optionInput);
+        questionDiv.appendChild(document.createElement('br'));
       }
 
-      
       questionsContainer.appendChild(questionDiv);
     }
   </script>
+</head>
+<body>
+
+  <h1>Questionnaire</h1>
+
+  <form method="POST">
+    <div id="questionsContainer">
+      <!-- Questions with options will be added here dynamically -->
+    </div>
+
+    <button type="button" onclick="addQuestion()">Add Question</button>
+    <button type="submit">Submit</button>
+  </form>
 
 </body>
 </html>
