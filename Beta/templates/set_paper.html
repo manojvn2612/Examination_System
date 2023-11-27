@@ -1,16 +1,56 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset='utf-8'>
-        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-        <title>Examination Login</title>
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <link rel='stylesheet' type='text/css' media='screen' href="{{ url_for('static', filename='design.css') }}">
-        <script src='main.js'></script>
-    </head>
-    <body>
-        <label for="q_id">q_id</label>
-        <input type="text" value="{{q_id}}" disabled>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set Paper</title>
+  <style>
+    /* Add any styling here */
+  </style>
+</head>
+<body>
+
+  <h1>Dynamic Questions with Options</h1>
+
+  <form id="questionsForm">
+    <button type="button" onclick="addQuestion()">Add Question</button>
+    <div id="questionsContainer">
+    </div>
+    <input type="submit" value="Submit">
+  </form>
+
+  <script>
+    function addQuestion() {
+      var questionsContainer = document.getElementById('questionsContainer');
+
+      var questionDiv = document.createElement('div');
+
+      var newQuestion = document.createElement('input');
+      newQuestion.type = 'text';
+      newQuestion.name = 'question[]'; 
+      newQuestion.placeholder = 'Enter your question';
+
+      questionDiv.appendChild(newQuestion);
+      questionDiv.appendChild(document.createElement('br')); 
+
+      for (var i = 1; i <= 4; i++) {
+        var optionLabel = document.createElement('label');
+        optionLabel.innerHTML = 'Option ' + i;
+
+        var option = document.createElement('input');
+        option.type = 'radio';
+        option.name = 'options[' + (questionsContainer.children.length / 2) + ']'; 
+
         
-    </body>
+        questionDiv.appendChild(option);
+        questionDiv.appendChild(optionLabel);
+        questionDiv.appendChild(document.createElement('br')); 
+      }
+
+      
+      questionsContainer.appendChild(questionDiv);
+    }
+  </script>
+
+</body>
 </html>
