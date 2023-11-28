@@ -6,9 +6,9 @@
         <title>Examination Login</title>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <link rel='stylesheet' type='text/css' media='screen' href="{{ url_for('static', filename='design.css') }}">
-        <script src='main.js'></script>
+        <script src="{{ url_for('static',filename='main.js') }}"></script>
     </head>
     <body>
-        
+        <button onclick="redirect_show_paper()">Show Paper</button>
     </body>
 </html>

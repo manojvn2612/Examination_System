@@ -7,3 +7,6 @@ function redirect_reg(params) {
 function redirect_set_q() {
     window.location.href = '{{ url_for('set_paper') }}';
 }
+function redirect_show_paper() {
+    window.location.href = '{{ url_for('show_paper') }}';
+}

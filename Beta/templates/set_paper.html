@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Questionnaire</title>
+  <title>Questionnaire {{paper_id_details}}</title>
   <script>
     function addQuestion() {
       var questionsContainer = document.getElementById('questionsContainer');
@@ -24,12 +24,18 @@
         optionInput.name = 'options[]';
         optionInput.placeholder = 'Enter option value';
 
+        var optionValueInput = document.createElement('input');
+        optionValueInput.type = 'text';
+        optionValueInput.name = 'option_values[]';
+        optionValueInput.placeholder = 'Enter value for the option';
+
         var optionRadio = document.createElement('input');
         optionRadio.type = 'radio';
         optionRadio.name = 'selected_option[]';
 
         questionDiv.appendChild(optionRadio);
         questionDiv.appendChild(optionInput);
+        questionDiv.appendChild(optionValueInput);
         questionDiv.appendChild(document.createElement('br'));
       }
 

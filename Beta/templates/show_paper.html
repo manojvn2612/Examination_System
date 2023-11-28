@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <title>Dashboard for </title>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel='stylesheet' type='text/css' media='screen' href="{{ url_for('static',filename='design.css') }}">
+        <script src="{{ url_for('static',filename='main.js') }}"></script>
+    </head>
+    <body>
+        <!DOCTYPE html>
+<html>
+<head>
+    <title>Paper Questions</title>
+</head>
+<body>
+    <h1>Paper Questions</h1>
+
+    {% for paper in papers %}
+        <h2>{{ paper.title }}</h2>
+        <ul>
+            {% for question in paper.questions %}
+                <li>
+                    <label for="{{ question.id }}">{{ question.text }}</label>
+                    <ul>
+                        {% for option in question.options %}
+                            <li>
+                                <input type="radio" name="option{{ question.id }}" id="{{ option.id }}" value="{{ option.text }}">
+                                <label for="{{ option.id }}">{{ option.text }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="button" onclick="submitAnswers('{{ paper.id }}')">Submit Answers</button>
+    {% endfor %}
+</body>
+</html>
+
+    </body>
+</html>

@@ -90,7 +90,7 @@ def dashboard():
 def set_paper():
     try:
         session = db.session
-        last_q = text("SELECT last_q() as last_qid")
+        last_q = text("SELECT last_q()")
         get_id = session.execute(last_q).fetchone()
         paper_id_details = get_id[0] + 1
 
@@ -99,21 +99,32 @@ def set_paper():
             options = request.form.getlist('options[]')
             option_values = request.form.getlist('option_values[]')
             selected_options = request.form.getlist('selected_option[]')
-
-            # Assuming each set of options corresponds to a question
+            print("Length of questions:", len(questions))
+            print("Length of options:", len(options))
+            print("Length of option_values:", len(option_values))
+            print("Length of selected_options:", len(selected_options))
             for i, question_text in enumerate(questions):
                 # Create a new Question instance
                 question_text = question_text
-                option_a = (options[i] == 'option_a'),
-                option_b = (options[i] == 'option_b'),
-                option_c = (options[i] == 'option_c'),
-                option_d = (options[i] == 'option_d'),
-                correct = option_values[i] if selected_options[i] == 'on' else None  # Set correct option value if selected
+                option_a = (options[i] == 'option_a')
+                option_b = (options[i] == 'option_b')
+                option_c = (options[i] == 'option_c')
+                option_d = (options[i] == 'option_d')
+                correct = option_values[i] if selected_options[i] == 'on' else None
+
                 query = text(
-                    f"INSERT INTO q{paper_id_details}(question_text,option_a,option_b,option_c,option_d,correct) VALUES ({question_text},{option_a},{option_b},{option_c},{option_d},{correct})"
+                    f"INSERT INTO questions.q{paper_id_details}(question_text,option_a,option_b,option_c,option_d,correct) VALUES (:question_text, :option_a, :option_b, :option_c, :option_d, :correct)"
                 )
+
                 # Add the new question to the database
-                db.session.execute(query)
+                db.session.execute(query, {
+                    'question_text': question_text,
+                    'option_a': option_a,
+                    'option_b': option_b,
+                    'option_c': option_c,
+                    'option_d': option_d,
+                    'correct': correct
+                })
 
             # Commit changes to the database
             db.session.commit()
@@ -124,7 +135,9 @@ def set_paper():
     except Exception as e:
         return f"Error: {str(e)}", 500
 
-
+@app.route("/show_paper", methods=["GET", "POST"])
+def show_paper():
+    return render_template("show_paper.html")
 @app.errorhandler(500)
 def wrong(error):
     return  render_template('500.html'),500
