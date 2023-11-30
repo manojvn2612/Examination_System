@@ -1,5 +1,7 @@
 
-from flask import Flask, render_template, redirect, request, url_for,session
+from re import A
+from click import option
+from flask import Flask, render_template, redirect, request, url_for,session,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from datetime import datetime
@@ -23,6 +25,7 @@ class Login_Users_s(db.Model):
     email = db.Column(db.String(32),primary_key = True)
     name = db.Column(db.String(32))
     password = db.Column(db.String(32), nullable=False)
+    #classroom = db.Column(db.String(32))
     def __init__(self,email,password):
         self.email = email
         self.password = password
@@ -32,6 +35,7 @@ class Login_Users_t(db.Model):
     email = db.Column(db.String(32),primary_key = True)
     name = db.Column(db.String(32))
     password = db.Column(db.String(32), nullable=False)
+    #designation = db.Column(db.String(32))
     def __init__(self,email,password):
         self.email = email
         self.password = password
@@ -88,56 +92,68 @@ def dashboard():
      
 @app.route("/set_paper", methods=["POST", "GET"])
 def set_paper():
-    try:
-        session = db.session
+    session = db.session
+    last_q = text("SELECT last_q()")
+    get_id = session.execute(last_q).fetchone()
+    paper_id_details = get_id[0] + 1
+    return render_template('set_paper.html')
+@app.route("/submit-paper", methods=['POST'])
+def test_submitted():
+    session = db.session
+    data = request.json.get('responses',[])
+    # Process the data as needed
+    print(data)
+    for question_id, question_data in data.items():
+        question_text = question_data['question']
+        options = question_data['options']
+        
+            # Extracting option values
+        # Extracting option values
+        option_a = options['a']['text']
+        option_b = options['b']['text']
+        option_c = options['c']['text']
+        option_d = options['d']['text']
+        
+        # Checking which option is selected
+        if options['a']['selected']:
+            correct_option = 'a'
+        elif options['b']['selected']:
+            correct_option = 'b'
+        elif options['c']['selected']:
+            correct_option = 'c'
+        elif options['d']['selected']:
+            correct_option = 'd'
+        else:
+            correct_option = None  # Handle the case where no option is selected
+
+            # Inserting into the database
+        
+        print(option_a, option_b, option_c,option_d,correct_option)
         last_q = text("SELECT last_q()")
         get_id = session.execute(last_q).fetchone()
         paper_id_details = get_id[0] + 1
-
-        if request.method == 'POST':
-            questions = request.form.getlist('question[]')
-            options = request.form.getlist('options[]')
-            option_values = request.form.getlist('option_values[]')
-            selected_options = request.form.getlist('selected_option[]')
-            print("Length of questions:", len(questions))
-            print("Length of options:", len(options))
-            print("Length of option_values:", len(option_values))
-            print("Length of selected_options:", len(selected_options))
-            for i, question_text in enumerate(questions):
-                # Create a new Question instance
-                question_text = question_text
-                option_a = (options[i] == 'option_a')
-                option_b = (options[i] == 'option_b')
-                option_c = (options[i] == 'option_c')
-                option_d = (options[i] == 'option_d')
-                correct = option_values[i] if selected_options[i] == 'on' else None
-
-                query = text(
-                    f"INSERT INTO questions.q{paper_id_details}(question_text,option_a,option_b,option_c,option_d,correct) VALUES (:question_text, :option_a, :option_b, :option_c, :option_d, :correct)"
-                )
-
+        create_table = text(f"CALL q_p_create({paper_id_details})")
+        db.session.execute(create_table)
+        qid = 1
+        query = text(
+        f"INSERT INTO questions.q{paper_id_details} (question_text,option_a,option_b,option_c,option_d,correct) VALUES ('{question_text}', '{option_a}','{option_b}', '{option_c}','{option_d}','{correct_option}')"
+        )
+        qid += 1
                 # Add the new question to the database
-                db.session.execute(query, {
-                    'question_text': question_text,
-                    'option_a': option_a,
-                    'option_b': option_b,
-                    'option_c': option_c,
-                    'option_d': option_d,
-                    'correct': correct
-                })
+        db.session.execute(query)
 
             # Commit changes to the database
-            db.session.commit()
-            return redirect(url_for("dashboard"))
+        db.session.commit()
 
-        # Handling other HTTP methods (e.g., GET)
-        return render_template('set_paper.html', q_id=paper_id_details)
-    except Exception as e:
-        return f"Error: {str(e)}", 500
+    # Return a response if necessary
+    return redirect(url_for("dashboard"))
 
 @app.route("/show_paper", methods=["GET", "POST"])
 def show_paper():
     return render_template("show_paper.html")
+@app.route("/logout")
+def logout():
+    return "<h1>Logout</h1>"
 @app.errorhandler(500)
 def wrong(error):
     return  render_template('500.html'),500
