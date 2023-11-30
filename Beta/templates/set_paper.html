@@ -1,60 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Questionnaire {{paper_id_details}}</title>
-  <script>
-    function addQuestion() {
-      var questionsContainer = document.getElementById('questionsContainer');
-
-      var questionDiv = document.createElement('div');
-
-      var newQuestion = document.createElement('input');
-      newQuestion.type = 'text';
-      newQuestion.name = 'question[]';
-      newQuestion.placeholder = 'Enter your question';
-
-      questionDiv.appendChild(newQuestion);
-      questionDiv.appendChild(document.createElement('br'));
-
-      for (var i = 1; i <= 4; i++) {
-        var optionInput = document.createElement('input');
-        optionInput.type = 'text';
-        optionInput.name = 'options[]';
-        optionInput.placeholder = 'Enter option value';
-
-        var optionValueInput = document.createElement('input');
-        optionValueInput.type = 'text';
-        optionValueInput.name = 'option_values[]';
-        optionValueInput.placeholder = 'Enter value for the option';
-
-        var optionRadio = document.createElement('input');
-        optionRadio.type = 'radio';
-        optionRadio.name = 'selected_option[]';
-
-        questionDiv.appendChild(optionRadio);
-        questionDiv.appendChild(optionInput);
-        questionDiv.appendChild(optionValueInput);
-        questionDiv.appendChild(document.createElement('br'));
-      }
-
-      questionsContainer.appendChild(questionDiv);
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Quiz Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .quiz-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Questionnaire</h1>
+<div class="quiz-container">
+    <h2>Quiz Title</h2>
 
-  <form method="POST">
-    <div id="questionsContainer">
-      <!-- Questions with options will be added here dynamically -->
+    <div id="questions-container">
+        <!-- Questions will be dynamically added here -->
     </div>
 
-    <button type="button" onclick="addQuestion()">Add Question</button>
-    <button type="submit">Submit</button>
-  </form>
+    <button onclick="submitQuiz()">Submit</button>
+    <button onclick="addQuestion()">Add Question</button>
+
+    <script>
+        let questionCount = 0;
+
+        function addQuestion() {
+            questionCount++;
+
+            const questionsContainer = document.getElementById('questions-container');
+
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+
+            questionDiv.innerHTML = `
+                <h3>Question ${questionCount}: <input type="text" name="question${questionCount}" placeholder="Enter your question" /></h3>
+                <label><input type="radio" name="q${questionCount}" value="a"><input type="text" name="optionA${questionCount}"></label><br>
+                <label><input type="radio" name="q${questionCount}" value="b"><input type="text" name="optionB${questionCount}"></label><br>
+                <label><input type="radio" name="q${questionCount}" value="c"><input type="text" name="optionC${questionCount}"></label><br>
+                <label><input type="radio" name="q${questionCount}" value="d"><input type="text" name="optionD${questionCount}"></label><br>
+            `;
+
+            questionsContainer.appendChild(questionDiv);
+        }
+
+        function submitQuiz() {
+            const responses = {};
+
+            for (let i = 1; i <= questionCount; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                const questionText = document.querySelector(`input[name="question${i}"]`).value;
+                const optionA = document.querySelector(`input[name="optionA${i}"]`).value;
+                const optionB = document.querySelector(`input[name="optionB${i}"]`).value;
+                const optionC = document.querySelector(`input[name="optionC${i}"]`).value;
+                const optionD = document.querySelector(`input[name="optionD${i}"]`).value;
+
+                if (selectedOption) {
+                    responses[`question${i}`] = {
+                        question: questionText,
+                        options: {
+                            a: { text: optionA, selected: selectedOption.value === 'a' },
+                            b: { text: optionB, selected: selectedOption.value === 'b' },
+                            c: { text: optionC, selected: selectedOption.value === 'c' },
+                            d: { text: optionD, selected: selectedOption.value === 'd' },
+                        },
+                    };
+                } else {
+                    alert(`Please select an option for Question ${i}`);
+                    return;
+                }
+            }
+
+            // Send data to Flask using Ajax (Assuming you have a Flask route to handle this)
+            fetch('/submit-paper', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ responses }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+
+</div>
 
 </body>
 </html>

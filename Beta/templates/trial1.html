@@ -1,0 +1,58 @@
+<form>
+    <div id="questions">
+      <div class="question">
+        <label for="q1a">Question 1:</label>
+        <input type="radio" id="q1a" name="q1" value="a">
+        <label for="q1a">Option A</label>
+        <input type="radio" id="q1b" name="q1" value="b">
+        <label for="q1b">Option B</label>
+        <input type="radio" id="q1c" name="q1" value="c">
+        <label for="q1c">Option C</label>
+        <input type="radio" id="q1d" name="q1" value="d">
+        <label for="q1d">Option D</label>
+      </div>
+  
+      <div class="question">
+        <label for="q2a">Question 2:</label>
+        <input type="radio" id="q2a" name="q2" value="a">
+        <label for="q2a">Option A</label>
+        <input type="radio" id="q2b" name="q2" value="b">
+        <label for="q2b">Option B</label>
+        <input type="radio" id="q2c" name="q2" value="c">
+        <label for="q2c">Option C</label>
+        <input type="radio" id="q2d" name="q2" value="d">
+        <label for="q2d">Option D</label>
+      </div>
+  
+      <button type="button" onclick="addQuestion()">Add Question</button>
+    </div>
+  
+    <button type="submit">Submit</button>
+  </form>
+<script>
+    function addQuestion() {
+  const question = document.createElement('div');
+  question.className = 'question';
+
+  const label = document.createElement('label');
+  label.textContent = 'Question ' + (document.querySelectorAll('.question').length + 1) + ':';
+  question.appendChild(label);
+
+  for (let i = 0; i < 4; i++) {
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'q' + (document.querySelectorAll('.question').length + 1);
+    radio.value = String.fromCharCode('a'.charCodeAt(0) + i);
+
+    const optionLabel = document.createElement('label');
+    optionLabel.textContent = 'Option ' + String.fromCharCode('A'.charCodeAt(0) + i);
+
+    question.appendChild(radio);
+    question.appendChild(optionLabel);
+  }
+
+  const questions = document.getElementById('questions');
+  questions.appendChild(question);
+}
+
+</script>  
