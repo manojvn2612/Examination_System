@@ -25,7 +25,7 @@ class Login_Users_s(db.Model):
     email = db.Column(db.String(32),primary_key = True)
     name = db.Column(db.String(32))
     password = db.Column(db.String(32), nullable=False)
-    #classroom = db.Column(db.String(32))
+    classroom = db.Column(db.String(32))
     def __init__(self,email,password):
         self.email = email
         self.password = password
@@ -35,7 +35,7 @@ class Login_Users_t(db.Model):
     email = db.Column(db.String(32),primary_key = True)
     name = db.Column(db.String(32))
     password = db.Column(db.String(32), nullable=False)
-    #designation = db.Column(db.String(32))
+    designation = db.Column(db.String(32))
     def __init__(self,email,password):
         self.email = email
         self.password = password
@@ -44,6 +44,7 @@ class Questions(db.Model):
     qid = db.Column(db.Integer, primary_key = True, autoincrement = True)
     qgid = db.Column(db.Integer, nullable=False)
     Teacher = db.Column(db.String(32), nullable=False)
+    Name = db.Column(db.String(32))
     DOC = db.Column(db.DateTime, default=datetime.utcnow)
     DOS = db.Column(db.DateTime)
     DOE = db.Column(db.DateTime)
@@ -148,9 +149,19 @@ def test_submitted():
     # Return a response if necessary
     return redirect(url_for("dashboard"))
 
-@app.route("/show_paper", methods=["GET", "POST"])
+@app.route("/attempt_paper", methods=["GET", "POST"])
 def show_paper():
-    return render_template("show_paper.html")
+    session = db.session
+    if request.method == 'POST':
+        selected_options = {key: request.form[key] for key in request.form}
+        print(selected_options)  # Replace with your logic to evaluate answers
+
+    # Adjust the column names based on your actual table structure
+    query = text(f"SELECT qid, question_text, option_a, option_b, option_c, option_d FROM questions.q101")
+    questions = session.execute(query)
+    correct_ans = text(f"SELECT correct FROM QUESTIONS.q101 WHERE QUESTIONS.qid = 1")
+
+    return render_template('show_paper.html', questions=questions)
 @app.route("/logout")
 def logout():
     return "<h1>Logout</h1>"
